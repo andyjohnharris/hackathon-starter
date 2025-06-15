@@ -1,0 +1,56 @@
+services:
+  # frontend:
+  #   image: node:24
+  #   tty: true
+  #   stdin_open: true
+  #   build:
+  #     context: ./frontend
+  #     target: dev
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/frontend
+  #     - /frontend/node_modules
+  #     - /frontend/.next
+  #   ports:
+  #     - "3000:3000"
+
+  backend:
+    image: python:3.11-slim
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://postgres:example@db:5432/postgres
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 54320:5432
+    environment:
+      BUILD_ENV: docker
+      POSTGRES_USER: postgres
+      PGUSER: postgres
+      POSTGRES_PASSWORD: example
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  pgdata:
