@@ -21,7 +21,7 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgres://postgres:example@db:5432/postgres
-      PYTHONUNBUFFERED: 1
+      OPENAI_API_KEY: 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
     depends_on:
       db:
         condition: service_healthy
@@ -37,7 +37,7 @@ services:
       BUILD_ENV: docker
       POSTGRES_USER: postgres
       PGUSER: postgres
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 1s
